@@ -187,7 +187,7 @@ app.post('/api/redeem-angpao', async (req, res) => {
         if (result.status.code === 'SUCCESS') {
             const amount = result.data.my_ticket.amount_baht;
             const sender = result.data.owner_profile.full_name;
-            const txId = 'TMN-' + Date.now();
+            const txId = 'YUKI-' + Date.now();
 
             const newTx = {
                 id: txId,
@@ -247,7 +247,13 @@ async function sendReceipt(tx) {
     }
 }
 
-module.exports = app; // <-- ใส่บรรทัดนี้แทน
-    console.log(`✅ Server running at http://localhost:${PORT}`);
-    module.exports = app;
+module.exports = app;
+
+// ถ้าจะรันในคอมให้เปิดบรรทัดนี้ (แต่ตอนขึ้น Vercel ต้องปิดไว้ หรือใช้ if)
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`✅ Server running at http://localhost:${PORT}`);
+    });
+}
 });
+
