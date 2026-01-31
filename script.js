@@ -11,7 +11,7 @@ let promptpayID = "0925384159"; // Default Fallback
 let currentTxId = null;
 
 // Ensure this matches your server port
-const API_URL = 'http://localhost:3000/api'; 
+const API_URL = '/api';
 
 // ==========================================
 // 2. INITIALIZATION
@@ -245,4 +245,5 @@ window.onclick = function(event) {
     if (event.target == modal) {
         closeModal();
     }
+
 }
