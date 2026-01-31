@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="th" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Secure Payment</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'Prompt', 'sans-serif'],
+                    },
+                    colors: {
+                        slate: {
+                            850: '#1e293b', // Custom Dark Slate
+                            900: '#0f172a',
+                        },
+                        primary: '#3b82f6', // Blue 500
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02)',
+                        'glow': '0 0 15px rgba(59, 130, 246, 0.5)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* CSS สำหรับรอยหยักใบเสร็จ */
+        .receipt-jagged {
+            background-color: #f8fafc;
+            background-image: linear-gradient(135deg, #ffffff 50%, transparent 50%), linear-gradient(45deg, #ffffff 50%, transparent 50%);
+            background-position: bottom left; background-repeat: repeat-x; background-size: 16px 16px; 
+            filter: drop-shadow(0px 1px 0px #e2e8f0); 
+        }
+        
+        /* Input Transitions */
+        input, button, .method-card { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+        
+        /* Payment Method Active States */
+        .method-active-pp { 
+            border-color: #3b82f6; 
+            background-color: #eff6ff; 
+            box-shadow: 0 0 0 1px #3b82f6; 
+        }
+        .method-active-tm { 
+            border-color: #f97316; 
+            background-color: #fff7ed; 
+            box-shadow: 0 0 0 1px #f97316; 
+        }
+
+        /* TrueMoney Input Animation */
+        .tm-input-wrapper { 
+            max-height: 0; 
+            opacity: 0; 
+            overflow: hidden; 
+            transform: translateY(-5px);
+            transition: all 0.3s ease-out; 
+        }
+        .tm-input-visible { 
+            max-height: 200px; 
+            opacity: 1; 
+            transform: translateY(0); 
+            margin-top: 1rem; 
+        }
+
+        /* Disable Zoom on Mobile Inputs */
+        input, select { font-size: 16px !important; }
+    </style>
+</head>
+<body class="h-full font-sans text-slate-900 antialiased overflow-hidden selection:bg-blue-100 selection:text-blue-900">
+
+    <div class="flex min-h-full flex-col md:flex-row h-screen overflow-y-auto md:overflow-hidden">
+        
+        <div class="relative flex w-full flex-col justify-center bg-slate-900 px-8 py-12 md:w-[45%] lg:w-[40%] text-white shrink-0 overflow-hidden">
+            
+            <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 rounded-full bg-blue-600 blur-[100px] opacity-20"></div>
+            <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 rounded-full bg-indigo-600 blur-[80px] opacity-20"></div>
+
+            <div class="relative z-10 max-w-md mx-auto w-full">
+                <div class="mb-8 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/10 backdrop-blur-sm">
+                    <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                    <span class="text-xs font-medium text-slate-200 tracking-wide">SECURE CHECKOUT</span>
+                </div>
+
+                <p class="text-slate-400 font-medium text-sm uppercase tracking-wider mb-2">Total Amount</p>
+                
+                <div class="flex items-baseline mb-8">
+                    <span class="text-2xl text-slate-500 mr-3 font-light">THB</span>
+                    <span class="text-6xl md:text-7xl font-bold tracking-tight text-white" id="displayAmount">0.00</span>
+                </div>
+                
+                <div class="h-px w-full bg-gradient-to-r from-slate-700 to-transparent mb-8"></div>
+                
+                <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-store text-xl text-blue-400"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-500 uppercase font-bold tracking-wide mb-1">Payment For</p>
+                        <h2 class="text-xl font-semibold text-white leading-tight" id="displayMerchant">Merchant Name</h2>
+                        
+                        <div id="displayNote" class="mt-2 hidden">
+                            <p class="text-sm text-slate-400 italic bg-slate-800/50 px-2 py-1 rounded inline-block border border-slate-700/50"></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-12 flex items-center gap-4 text-xs text-slate-500">
+                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-shield-halved"></i> SSL Encrypted</span>
+                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-clock"></i> Real-time</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex-1 flex flex-col justify-center bg-white px-6 py-12 md:px-12 lg:px-24 overflow-y-auto">
+            <div class="w-full max-w-lg mx-auto space-y-8">
+                
+                <div class="text-center md:text-left">
+                    <h1 class="text-2xl font-bold tracking-tight text-slate-900">Payment Details</h1>
+                    <p class="text-sm text-slate-500 mt-1">Complete your purchase by providing your details.</p>
+                </div>
+                
+                <div class="space-y-2 group">
+                    <label class="block text-sm font-semibold text-slate-700">Email Address <span class="text-red-500">*</span></label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fa-regular fa-envelope text-slate-400 group-focus-within:text-blue-500 transition-colors"></i>
+                        </div>
+                        <input id="customerEmail" type="email" class="block w-full rounded-lg border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20 sm:text-sm py-3 pl-10 pr-4 shadow-sm border transition-all" placeholder="name@company.com">
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <label class="block text-sm font-semibold text-slate-700">Select Payment Method</label>
+
+                    <div onclick="selectMethod('promptpay')" id="card-promptpay" class="method-card method-active-pp relative flex cursor-pointer rounded-xl border border-slate-200 p-4 hover:border-blue-400 group">
+                        <div class="flex flex-1 items-center gap-4">
+                            <div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
+                                <i class="fa-solid fa-qrcode text-blue-600 text-lg"></i>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="block text-sm font-bold text-slate-900">PromptPay QR</span>
+                                <span class="mt-0.5 flex items-center text-xs text-slate-500 group-hover:text-blue-600 transition-colors">Instant payment via bank app</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/c/c5/PromptPay-logo.png" class="h-6 object-contain opacity-80 group-hover:opacity-100 transition-opacity">
+                            <i id="check-pp" class="fa-solid fa-circle-check text-blue-600 text-xl"></i>
+                            <i id="circle-pp" class="fa-regular fa-circle text-slate-300 text-xl hidden"></i>
+                        </div>
+                    </div>
+
+                    <div onclick="selectMethod('truemoney')" id="card-truemoney" class="method-card relative flex flex-col cursor-pointer rounded-xl border border-slate-200 p-4 hover:border-orange-300 group transition-all">
+                        
+                        <div class="flex justify-between items-center w-full">
+                            <div class="flex flex-1 items-center gap-4">
+                                <div class="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-gift text-orange-500 text-lg"></i>
+                                </div>
+                                <div class="flex flex-col">
+                                    <span class="block text-sm font-bold text-slate-900">TrueMoney Gift</span>
+                                    <span class="mt-0.5 flex items-center text-xs text-slate-500 group-hover:text-orange-600 transition-colors">Pay via Gift Link</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <img src="https://s.isanook.com/hi/0/ud/286/1432809/tw.jpg" class="h-6 object-contain opacity-80 group-hover:opacity-100 transition-opacity">
+                                <i id="check-tm" class="fa-solid fa-circle-check text-orange-500 text-xl hidden"></i>
+                                <i id="circle-tm" class="fa-regular fa-circle text-slate-300 text-xl"></i>
+                            </div>
+                        </div>
+
+                        <div id="input-truemoney" class="tm-input-wrapper w-full cursor-auto">
+                            <div class="bg-orange-50/50 p-4 rounded-lg border border-orange-100/50 mt-2">
+                                <label class="block text-xs font-bold text-orange-700 mb-1.5 uppercase tracking-wide">Paste Gift Link Here</label>
+                                <div class="relative">
+                                    <input id="angpaoLink" type="url" class="block w-full rounded-md border-orange-200 bg-white text-slate-900 placeholder:text-slate-400 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 sm:text-sm py-2.5 px-3 shadow-sm border transition-all" placeholder="https://gift.truemoney.com/campaign/...">
+                                </div>
+                                <p class="text-[11px] text-slate-500 mt-2 flex items-start gap-1.5 leading-tight">
+                                    <i class="fa-solid fa-circle-info text-orange-400 mt-0.5"></i>
+                                    Create a Red Envelope in TrueMoney app with the exact amount and paste the link above.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button onclick="handlePayment()" id="mainPayBtn" class="w-full rounded-xl bg-slate-900 px-6 py-4 text-sm font-bold text-white shadow-lg shadow-slate-900/10 hover:bg-slate-800 hover:shadow-slate-900/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 transition-all active:scale-[0.98] flex items-center justify-center gap-2">
+                    <span>Pay THB <span id="btnAmount">0.00</span></span>
+                    <i class="fa-solid fa-arrow-right text-xs opacity-70"></i>
+                </button>
+                
+                <div class="pt-6 border-t border-slate-100 flex justify-center gap-6 opacity-40 grayscale hover:grayscale-0 transition-all duration-500">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/c5/PromptPay-logo.png" class="h-5">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/True_Money_Wallet_logo.svg/1200px-True_Money_Wallet_logo.svg.png" class="h-5">
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div id="qrModal" class="relative z-50 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="fixed inset-0 bg-slate-900/90 backdrop-blur-sm transition-opacity"></div>
+        <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+            <div class="flex min-h-full items-center justify-center p-4 text-center">
+                
+                <div class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-2xl w-full max-w-sm border border-slate-100">
+                    
+                    <div id="scanView" class="hidden">
+                        <div class="bg-white px-4 pb-6 pt-6 sm:p-6 text-center">
+                            <div class="mb-4">
+                                <span class="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wide border border-blue-100">Scan to Pay</span>
+                            </div>
+                            
+                            <h3 class="font-bold text-lg text-slate-900 mb-1">PromptPay QR</h3>
+                            <p class="text-xs text-slate-500 mb-4">Open your banking app to scan</p>
+                            
+                            <div class="relative bg-white p-2 rounded-2xl border-2 border-dashed border-blue-100 inline-block mb-4 shadow-sm group hover:border-blue-300 transition-colors">
+                                <img id="qrImage" src="" class="w-[200px] h-[200px] object-contain mix-blend-multiply rounded-lg">
+                                
+                                <div id="checkingOverlay" class="absolute inset-0 bg-white/90 backdrop-blur-sm hidden flex-col items-center justify-center z-20 rounded-lg">
+                                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-2"></div>
+                                    <span class="text-xs font-bold text-blue-900 uppercase tracking-wide">Checking...</span>
+                                </div>
+                            </div>
+                            
+                            <div class="space-y-2.5">
+                                <button onclick="simulateCheckPayment()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-blue-500/20 active:scale-95 transition-all flex justify-center items-center gap-2">
+                                    <i class="fa-solid fa-rotate-right"></i> Check Status
+                                </button>
+                                <button onclick="closeModal()" class="w-full bg-white border border-slate-200 text-slate-600 font-bold py-3.5 rounded-xl hover:bg-slate-50 transition-colors">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="loadingView" class="hidden py-16 px-8 text-center">
+                        <div class="relative w-20 h-20 mx-auto mb-6">
+                            <div class="absolute inset-0 border-4 border-slate-100 rounded-full"></div>
+                            <div class="absolute inset-0 border-4 border-orange-500 rounded-full border-t-transparent animate-spin"></div>
+                            <div class="absolute inset-0 flex items-center justify-center text-orange-500 text-xl">
+                                <i class="fa-solid fa-wallet"></i>
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-2">Verifying...</h3>
+                        <p class="text-sm text-slate-500">Checking your Gift Link with TrueMoney.</p>
+                        <p class="text-xs text-orange-500 mt-4 font-bold animate-pulse">Please do not close this window</p>
+                    </div>
+
+                    <div id="successView" class="hidden w-full bg-white">
+                        <div class="px-6 pt-10 pb-6 text-center flex flex-col items-center">
+                            
+                            <div class="w-20 h-20 rounded-full bg-green-50 border-4 border-green-100 flex items-center justify-center mb-6 shadow-sm">
+                                <i class="fa-solid fa-check text-4xl text-green-500"></i>
+                            </div>
+
+                            <h3 class="text-2xl font-bold text-slate-800 mb-2">Payment Successful!</h3>
+                            <p class="text-slate-500 mb-8 text-sm px-4">
+                                You have successfully paid <span id="successMerchantName" class="font-bold text-slate-900">Store</span>.
+                            </p>
+                            
+                            <div class="w-full max-w-[280px] mx-auto filter drop-shadow-sm transition-transform hover:scale-105 duration-300">
+                                <div class="bg-slate-50 p-5 rounded-t-xl border-x border-t border-slate-200">
+                                    <div class="flex justify-between items-baseline border-b border-dashed border-slate-300 pb-3 mb-3">
+                                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Method</span>
+                                        <span id="receiptMethod" class="text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wide bg-gray-200 text-gray-600">QR</span>
+                                    </div>
+                                    <div class="flex justify-between items-end">
+                                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Total Paid</span>
+                                        <span id="receiptAmount" class="text-3xl font-mono text-slate-800 font-bold tracking-tighter">0.00</span>
+                                    </div>
+                                </div>
+                                <div class="h-4 w-full bg-slate-50 relative receipt-jagged border-x border-slate-200/0"></div>
+                            </div>
+                            
+                            <div class="mt-8 pt-6 border-t border-slate-50 w-full">
+                                <p class="font-mono text-[10px] text-slate-400 mb-1 uppercase tracking-widest">Transaction ID</p>
+                                <p class="font-mono text-xs text-slate-600 font-bold select-all cursor-pointer hover:text-blue-600" id="txId">TXN-0000</p>
+                            </div>
+                        </div>
+                        <div class="p-4 border-t border-slate-50 bg-slate-50/50">
+                            <button onclick="closeModal()" class="w-full rounded-xl bg-slate-900 px-6 py-4 text-sm font-bold text-white shadow-lg hover:bg-slate-800 transition-all">Close Receipt</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        let selectedMethod = 'promptpay';
+
+        function selectMethod(method) {
+            selectedMethod = method;
+            const cardPP = document.getElementById('card-promptpay');
+            const cardTM = document.getElementById('card-truemoney');
+            const inputTM = document.getElementById('input-truemoney');
+            
+            // Icons
+            const checkPP = document.getElementById('check-pp'); const circlePP = document.getElementById('circle-pp');
+            const checkTM = document.getElementById('check-tm'); const circleTM = document.getElementById('circle-tm');
+            
+            // Button
+            const btn = document.getElementById('mainPayBtn');
+
+            if (method === 'promptpay') {
+                // Activate PromptPay
+                cardPP.classList.add('method-active-pp');
+                checkPP.classList.remove('hidden'); circlePP.classList.add('hidden');
+
+                // Deactivate TrueMoney
+                cardTM.classList.remove('method-active-tm');
+                inputTM.classList.remove('tm-input-visible');
+                checkTM.classList.add('hidden'); circleTM.classList.remove('hidden');
+
+                // Update Button
+                const amt = document.getElementById('btnAmount').innerText;
+                btn.innerHTML = `<span>Pay THB <span id="btnAmount">${amt}</span></span> <i class="fa-solid fa-arrow-right text-xs opacity-70"></i>`;
+                btn.className = "w-full rounded-xl bg-slate-900 px-6 py-4 text-sm font-bold text-white shadow-lg hover:bg-slate-800 transition-all active:scale-[0.98] flex items-center justify-center gap-2";
+
+            } else {
+                // Activate TrueMoney
+                cardTM.classList.add('method-active-tm');
+                inputTM.classList.add('tm-input-visible');
+                checkTM.classList.remove('hidden'); circleTM.classList.add('hidden');
+
+                // Deactivate PromptPay
+                cardPP.classList.remove('method-active-pp');
+                checkPP.classList.add('hidden'); circlePP.classList.remove('hidden');
+                
+                // Update Button
+                btn.innerHTML = `<span>Confirm Gift Link</span> <i class="fa-solid fa-gift text-xs opacity-70"></i>`;
+                btn.className = "w-full rounded-xl bg-orange-600 px-6 py-4 text-sm font-bold text-white shadow-lg shadow-orange-500/30 hover:bg-orange-700 transition-all active:scale-[0.98] flex items-center justify-center gap-2";
+            }
+        }
+        
+        // Prevent click inside input from triggering card selection
+        document.getElementById('angpaoLink').addEventListener('click', function(e) { e.stopPropagation(); });
+
+        function handlePayment() {
+            if (selectedMethod === 'promptpay') {
+                generateQR();
+            } else {
+                payWithTrueMoney();
+            }
+        }
+    </script>
+</body>
+</html>
