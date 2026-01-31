@@ -247,6 +247,7 @@ async function sendReceipt(tx) {
     }
 }
 
-app.listen(PORT, () => {
+module.exports = app; // <-- ใส่บรรทัดนี้แทน
     console.log(`✅ Server running at http://localhost:${PORT}`);
+    module.exports = app;
 });
