@@ -1,167 +1,136 @@
 <!DOCTYPE html>
-<html lang="th" class="h-full bg-slate-100">
+<html lang="th" class="h-full bg-slate-50 antialiased">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Merchant Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: { sans: ['Inter', 'Prompt', 'sans-serif'], },
-                    animation: { 'float': 'float 6s ease-in-out infinite' },
-                    keyframes: { float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-10px)' } } }
+                    fontFamily: { sans: ['"Plus Jakarta Sans"', 'Prompt', 'sans-serif'], },
+                    colors: {
+                        primary: { 50: '#eff6ff', 100: '#dbeafe', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 900: '#1e3a8a' }
+                    }
                 }
             }
         }
     </script>
-    <style>input { font-size: 16px !important; } .no-scrollbar::-webkit-scrollbar { display: none; }</style>
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .glass-effect { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+    </style>
 </head>
-<body class="h-full text-slate-900 bg-slate-50 flex flex-col">
+<body class="h-full text-slate-600 flex flex-col">
 
-    <div class="relative bg-[#002060] text-white pb-32 pt-10 px-6 shadow-2xl overflow-hidden shrink-0">
-        <div class="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-500 rounded-full blur-[120px] opacity-20 animate-float"></div>
-        <div class="absolute bottom-0 right-0 translate-x-1/3 translate-y-1/3 w-[500px] h-[500px] bg-indigo-500 rounded-full blur-[120px] opacity-20 animate-float" style="animation-delay: 2s;"></div>
+    <div class="bg-slate-900 text-white pt-8 pb-32 px-6 relative overflow-hidden shrink-0">
+        <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-600 rounded-full blur-[150px] opacity-20 -translate-y-1/2 translate-x-1/3"></div>
+        <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-indigo-500 rounded-full blur-[120px] opacity-20 translate-y-1/3 -translate-x-1/4"></div>
 
-        <div class="relative z-10 max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+        <div class="relative z-10 max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
             <div class="flex items-center gap-4">
-                <div class="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 shadow-lg">
-                    <i class="fa-solid fa-chart-line text-2xl text-white"></i>
+                <div class="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center border border-white/10 shadow-lg">
+                    <i class="fa-solid fa-wallet text-xl text-blue-400"></i>
                 </div>
                 <div>
-                    <h1 class="text-3xl font-bold tracking-tight">Merchant Console</h1>
-                    <div class="flex items-center gap-2 mt-1">
-                        <span class="relative flex h-2.5 w-2.5">
-                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                          <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
-                        </span>
-                        <p class="text-sm text-blue-200 font-medium tracking-wide">System Online & Monitoring</p>
+                    <h1 class="text-2xl font-bold tracking-tight text-white">Merchant Console</h1>
+                    <div class="flex items-center gap-2 mt-0.5">
+                        <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                        <p class="text-xs text-slate-400 font-medium uppercase tracking-wider">Live Connection</p>
                     </div>
                 </div>
             </div>
 
             <div class="flex gap-3">
-                <a href="index.html" target="_blank" class="group flex items-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/10 rounded-full text-sm font-bold transition-all">
-                    <span>Open Payment Page</span>
-                    <i class="fa-solid fa-arrow-up-right-from-square text-xs opacity-70 group-hover:translate-x-1 transition-transform"></i>
-                </a>
-                <button onclick="fetchHistory()" class="w-12 h-12 rounded-full bg-blue-600 hover:bg-blue-500 flex items-center justify-center shadow-lg transition-all active:scale-95 border border-white/10">
-                    <i class="fa-solid fa-rotate text-white text-lg"></i>
+                <button onclick="fetchSheetData()" class="group flex items-center gap-2 px-4 py-2.5 bg-white/10 hover:bg-white/20 border border-white/10 rounded-lg text-sm font-medium transition-all text-white">
+                    <i class="fa-solid fa-rotate-right group-hover:rotate-180 transition-transform duration-500"></i>
+                    <span>Refresh Data</span>
                 </button>
             </div>
         </div>
     </div>
 
     <div class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 w-full -mt-24 pb-12 relative z-20">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             
-            <div class="lg:col-span-4 space-y-6">
-                
-                <div class="bg-white rounded-[2rem] shadow-xl shadow-slate-200/50 p-8 border border-slate-100 relative overflow-hidden group hover:shadow-2xl transition-all duration-300">
-                    <div class="flex items-center gap-3 mb-6">
-                        <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-700">
-                            <i class="fa-solid fa-shop"></i>
+            <div class="lg:col-span-1 space-y-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200/60 p-6">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-700">
+                            <i class="fa-solid fa-sliders text-sm"></i>
                         </div>
-                        <h3 class="text-xl font-bold text-slate-800">Store Settings</h3>
+                        <h3 class="text-base font-bold text-slate-800">Configuration</h3>
                     </div>
                     
-                    <div class="space-y-5">
+                    <div class="space-y-4">
                         <div>
-                            <label class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">Merchant Name</label>
-                            <input id="merchantName" type="text" class="block w-full rounded-xl border-0 py-3.5 px-4 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-200 focus:ring-2 focus:ring-blue-600 bg-slate-50 focus:bg-white transition-all font-medium" placeholder="Ex. Bungkii Shop">
+                            <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Merchant Name</label>
+                            <input id="merchantName" type="text" class="block w-full rounded-lg border-slate-200 text-sm focus:border-blue-500 focus:ring-blue-500 bg-slate-50" placeholder="Ex. Bungkii Shop">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">PromptPay / TrueMoney Number</label>
-                            <input id="promptpayID" type="tel" class="block w-full rounded-xl border-0 py-3.5 px-4 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-200 focus:ring-2 focus:ring-blue-600 bg-slate-50 focus:bg-white transition-all font-mono font-bold tracking-wide" placeholder="0xxxxxxxxx">
+                            <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">PromptPay ID</label>
+                            <input id="promptpayID" type="tel" class="block w-full rounded-lg border-slate-200 text-sm font-mono focus:border-blue-500 focus:ring-blue-500 bg-slate-50" placeholder="0xxxxxxxxx">
                         </div>
-                        
-                        <button onclick="saveSettings()" class="w-full mt-2 rounded-xl bg-slate-900 py-3.5 text-sm font-bold text-white shadow-lg hover:bg-slate-800 active:scale-95 transition-all flex justify-center items-center gap-2">
-                            <i class="fa-solid fa-save"></i> Save Configuration
+                        <button onclick="saveSettings()" class="w-full mt-2 rounded-lg bg-slate-800 py-2.5 text-xs font-bold text-white hover:bg-slate-700 transition-colors">
+                            Save Changes
                         </button>
-                        <p id="saveStatus" class="text-center text-xs text-green-600 hidden font-bold mt-2 flex justify-center items-center gap-1">
-                            <i class="fa-solid fa-circle-check"></i> Saved successfully!
-                        </p>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-[2rem] shadow-xl shadow-slate-200/50 p-8 border border-slate-100 relative overflow-hidden group hover:shadow-2xl transition-all duration-300">
-                    <div class="flex items-center gap-3 mb-6">
-                        <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
-                            <i class="fa-solid fa-link"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-slate-800">Link Generator</h3>
+                <div class="bg-blue-50 rounded-2xl shadow-sm border border-blue-100 p-6">
+                    <div class="flex items-center gap-2 mb-3">
+                        <i class="fa-brands fa-google-drive text-blue-600"></i>
+                        <h3 class="text-sm font-bold text-blue-900">Google Sheet Connection</h3>
                     </div>
-
-                    <div class="space-y-5">
-                        <div>
-                            <label class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">Amount (THB)</label>
-                            <div class="relative">
-                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                    <span class="text-slate-400 font-bold">฿</span>
-                                </div>
-                                <input id="genAmount" type="number" class="block w-full rounded-xl border-0 py-3.5 pl-10 px-4 text-blue-600 font-bold text-xl shadow-sm ring-1 ring-inset ring-blue-200 focus:ring-2 focus:ring-blue-500 bg-blue-50/30 focus:bg-white transition-all" placeholder="0.00">
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">Note (Optional)</label>
-                            <input id="genNote" type="text" class="block w-full rounded-xl border-0 py-3.5 px-4 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-200 focus:ring-2 focus:ring-blue-600 bg-slate-50 focus:bg-white transition-all" placeholder="e.g. Table 5">
-                        </div>
-
-                        <button onclick="generateLink()" class="w-full rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 py-3.5 text-sm font-bold text-white shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:from-blue-700 hover:to-indigo-700 active:scale-95 transition-all flex justify-center items-center gap-2">
-                            Generate Link <i class="fa-solid fa-wand-magic-sparkles"></i>
-                        </button>
-
-                        <div id="resultArea" class="hidden mt-4 pt-4 border-t border-dashed border-slate-200 animate-fade-in">
-                            <div class="bg-slate-100 p-3 rounded-xl border border-slate-200 flex items-center gap-2">
-                                <i class="fa-solid fa-globe text-slate-400 text-xs"></i>
-                                <input id="generatedLink" type="text" readonly class="bg-transparent border-none text-xs text-slate-600 w-full focus:ring-0 p-0 font-mono" value="...">
-                                <button onclick="copyLink()" class="bg-white p-2 rounded-lg text-slate-500 hover:text-blue-600 shadow-sm border border-slate-200 transition-colors" title="Copy">
-                                    <i class="fa-regular fa-copy"></i>
-                                </button>
-                            </div>
-                            <a id="previewLink" href="#" target="_blank" class="block text-center mt-3 text-xs font-bold text-blue-600 hover:text-blue-800 underline">
-                                Test this link
-                            </a>
-                        </div>
-                    </div>
+                    <p class="text-xs text-blue-700 mb-3 leading-relaxed">
+                        Paste your Web App URL here to fetch data.
+                    </p>
+                    <input id="sheetUrl" type="text" class="block w-full rounded-lg border-blue-200 text-xs text-blue-800 bg-white mb-3 p-2" placeholder="https://script.google.com/macros/s/..../exec">
+                    <button onclick="saveAndFetch()" class="w-full rounded-lg bg-blue-600 py-2 text-xs font-bold text-white hover:bg-blue-700 transition-colors shadow-sm shadow-blue-200">
+                        Connect & Load
+                    </button>
                 </div>
             </div>
 
-            <div class="lg:col-span-8">
-                <div class="bg-white rounded-[2rem] shadow-xl shadow-slate-200/50 flex flex-col h-full min-h-[600px] border border-slate-100 overflow-hidden relative">
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200/60 flex flex-col h-[600px] overflow-hidden">
                     
-                    <div class="px-8 py-6 border-b border-slate-100 flex justify-between items-center bg-white sticky top-0 z-20">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center text-green-600">
-                                <i class="fa-solid fa-clock-rotate-left"></i>
-                            </div>
-                            <h3 class="text-xl font-bold text-slate-800">Transaction History</h3>
+                    <div class="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-white sticky top-0 z-20">
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-800">Transaction History</h3>
+                            <p class="text-xs text-slate-400 mt-0.5">Real-time updates from Google Sheets</p>
                         </div>
-                        <span class="bg-slate-100 text-slate-500 text-[10px] px-3 py-1 rounded-full font-bold uppercase tracking-wider border border-slate-200">
-                            <span class="w-2 h-2 bg-green-500 rounded-full inline-block mr-1 animate-pulse"></span> Live Data
-                        </span>
+                        <div class="flex gap-4 text-right">
+                            <div>
+                                <p class="text-[10px] text-slate-400 font-bold uppercase">Total Vol.</p>
+                                <p id="totalVolume" class="text-sm font-bold text-slate-800">฿0.00</p>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="flex-1 overflow-y-auto p-0 relative custom-scrollbar">
+                    <div class="flex-1 overflow-auto relative">
                         <table class="w-full text-left border-collapse">
-                            <thead class="bg-slate-50/90 sticky top-0 z-10 backdrop-blur-sm shadow-sm">
+                            <thead class="bg-slate-50 sticky top-0 z-10">
                                 <tr>
-                                    <th class="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Time</th>
-                                    <th class="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Transaction ID</th>
-                                    <th class="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Details & Contact</th>
-                                    <th class="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-right">Amount</th>
-                                    <th class="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-center">Status</th>
+                                    <th class="px-5 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Time</th>
+                                    <th class="px-5 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Details</th>
+                                    <th class="px-5 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider text-right">Amount</th>
+                                    <th class="px-5 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider text-center">Status</th>
                                 </tr>
                             </thead>
                             <tbody id="transactionList" class="divide-y divide-slate-100">
                                 <tr>
-                                    <td colspan="5" class="px-6 py-24 text-center text-slate-400">
-                                        <div class="flex flex-col items-center gap-4">
-                                            <i class="fa-solid fa-circle-notch fa-spin text-3xl text-blue-200"></i>
-                                            <span class="text-sm font-medium">Connecting to server...</span>
+                                    <td colspan="4" class="px-6 py-24 text-center">
+                                        <div class="flex flex-col items-center justify-center gap-3">
+                                            <i class="fa-solid fa-cloud-arrow-down text-3xl text-slate-200 animate-bounce"></i>
+                                            <span class="text-sm text-slate-400 font-medium">Enter your Script URL to load data</span>
                                         </div>
                                     </td>
                                 </tr>
@@ -175,104 +144,116 @@
     </div>
 
     <script>
-        const API_URL = '/api';
+        // --- Configuration ---
+        const ELEMENTS = {
+            sheetUrl: document.getElementById('sheetUrl'),
+            tbody: document.getElementById('transactionList'),
+            totalVol: document.getElementById('totalVolume'),
+            merchantName: document.getElementById('merchantName'),
+            promptpayID: document.getElementById('promptpayID')
+        };
 
-        window.onload = function() {
-            if(localStorage.getItem('merchantName')) document.getElementById('merchantName').value = localStorage.getItem('merchantName');
-            if(localStorage.getItem('promptpayID')) document.getElementById('promptpayID').value = localStorage.getItem('promptpayID');
-            fetchHistory();
-            setInterval(fetchHistory, 5000); // Polling every 5s
-        }
+        // --- Load Saved Settings ---
+        window.onload = () => {
+            if(localStorage.getItem('sheetUrl')) ELEMENTS.sheetUrl.value = localStorage.getItem('sheetUrl');
+            if(localStorage.getItem('merchantName')) ELEMENTS.merchantName.value = localStorage.getItem('merchantName');
+            if(localStorage.getItem('promptpayID')) ELEMENTS.promptpayID.value = localStorage.getItem('promptpayID');
+            
+            if(localStorage.getItem('sheetUrl')) fetchSheetData();
+        };
 
         function saveSettings() {
-            const name = document.getElementById('merchantName').value;
-            const ppID = document.getElementById('promptpayID').value;
-            if(!name || !ppID) { alert('Please enter all fields'); return; }
-            localStorage.setItem('merchantName', name);
-            localStorage.setItem('promptpayID', ppID);
-            const status = document.getElementById('saveStatus');
-            status.classList.remove('hidden');
-            setTimeout(() => status.classList.add('hidden'), 2000);
+            localStorage.setItem('merchantName', ELEMENTS.merchantName.value);
+            localStorage.setItem('promptpayID', ELEMENTS.promptpayID.value);
+            alert("Settings Saved!");
         }
 
-        function generateLink() {
-            const baseUrl = window.location.href.replace('dashboard.html', 'index.html').split('?')[0];
-            const amount = document.getElementById('genAmount').value;
-            const note = document.getElementById('genNote').value;
-            const merchant = document.getElementById('merchantName').value || localStorage.getItem('merchantName');
-
-            if (!amount) { alert("Please enter amount"); return; }
-
-            let params = [`amount=${amount}`];
-            if (merchant) params.push(`merchant=${encodeURIComponent(merchant)}`);
-            if (note) params.push(`note=${encodeURIComponent(note)}`);
-
-            const finalUrl = `${baseUrl}?${params.join('&')}`;
-            document.getElementById('generatedLink').value = finalUrl;
-            document.getElementById('previewLink').href = finalUrl;
-            document.getElementById('resultArea').classList.remove('hidden');
+        function saveAndFetch() {
+            const url = ELEMENTS.sheetUrl.value.trim();
+            if(!url) return alert("Please enter the Google Script URL");
+            localStorage.setItem('sheetUrl', url);
+            fetchSheetData();
         }
 
-        function copyLink() {
-            const copyText = document.getElementById("generatedLink");
-            copyText.select();
-            navigator.clipboard.writeText(copyText.value);
-            const btn = event.currentTarget;
-            btn.innerHTML = '<i class="fa-solid fa-check text-green-500"></i>';
-            setTimeout(() => btn.innerHTML = '<i class="fa-regular fa-copy"></i>', 1500);
-        }
+        async function fetchSheetData() {
+            const url = localStorage.getItem('sheetUrl');
+            if (!url) return;
 
-        async function fetchHistory() {
-            const tbody = document.getElementById('transactionList');
+            ELEMENTS.tbody.innerHTML = `<tr><td colspan="4" class="py-20 text-center text-slate-400"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Loading data...</td></tr>`;
+
             try {
-                const response = await fetch(`${API_URL}/history`);
+                const response = await fetch(url);
                 const data = await response.json();
+                renderTable(data);
+            } catch (error) {
+                console.error("Error:", error);
+                ELEMENTS.tbody.innerHTML = `<tr><td colspan="4" class="py-10 text-center text-red-400 text-sm">Failed to load data. Check URL or Permissions.</td></tr>`;
+            }
+        }
 
-                if (data.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="5" class="text-center py-20 text-slate-400 text-sm">No transactions found</td></tr>`;
-                    return;
+        function renderTable(data) {
+            if (data.length === 0) {
+                ELEMENTS.tbody.innerHTML = `<tr><td colspan="4" class="py-10 text-center text-slate-400">No transactions found</td></tr>`;
+                return;
+            }
+
+            let total = 0;
+            let html = '';
+
+            // Sort by Timestamp (Newest first) - assuming timestamp is parseable
+            // ถ้า Date format ใน sheet ซับซ้อน อาจต้องปรับแก้ตรงนี้
+            data.reverse(); 
+
+            data.forEach(item => {
+                // Calculation
+                const amount = parseFloat(item.amount) || 0;
+                total += amount;
+
+                // Status Styling
+                // เช็คค่าจาก Column G: ถ้าเป็น TRUE/Checked จะได้ค่า true หรือ "TRUE"
+                let statusBadge;
+                const statusLower = String(item.status).toLowerCase();
+                
+                if (statusLower === 'true' || statusLower === 'completed' || statusLower === 'paid') {
+                    statusBadge = `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-green-50 text-green-600 border border-green-100"><i class="fa-solid fa-check"></i> Paid</span>`;
+                } else {
+                    statusBadge = `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-slate-100 text-slate-500 border border-slate-200">Pending</span>`;
                 }
 
-                tbody.innerHTML = ''; // Clear existing
+                // Date Formatting
+                let dateStr = item.timestamp;
+                try {
+                    const dateObj = new Date(item.timestamp);
+                    if(!isNaN(dateObj)) {
+                        dateStr = dateObj.toLocaleDateString('th-TH', { day: 'numeric', month: 'short', hour: '2-digit', minute:'2-digit' });
+                    }
+                } catch(e) {}
 
-                data.forEach(item => {
-                    const statusClass = item.status === 'completed' 
-                        ? 'bg-green-100 text-green-700 border-green-200' 
-                        : 'bg-yellow-50 text-yellow-700 border-yellow-200';
-                    
-                    const iconType = item.type === 'TrueMoney' 
-                        ? '<div class="w-8 h-8 rounded-full bg-orange-50 text-orange-500 flex items-center justify-center border border-orange-100"><i class="fa-solid fa-wallet text-xs"></i></div>' 
-                        : '<div class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-100"><i class="fa-solid fa-qrcode text-xs"></i></div>';
+                html += `
+                    <tr class="hover:bg-slate-50/80 transition-colors border-b border-slate-50 last:border-0 group">
+                        <td class="px-5 py-4 align-top">
+                            <div class="text-xs font-medium text-slate-700 font-mono">${dateStr}</div>
+                            <div class="text-[10px] text-slate-400 mt-1 font-mono group-hover:text-blue-500 transition-colors">#${item.transactionId}</div>
+                        </td>
+                        <td class="px-5 py-4 align-top">
+                            <div class="flex flex-col">
+                                <span class="text-sm font-bold text-slate-700">${item.merchant}</span>
+                                <span class="text-xs text-slate-500 mt-0.5">${item.email}</span>
+                                ${item.note ? `<div class="mt-1.5 flex items-center gap-1 text-[10px] text-slate-400 bg-white border border-slate-200 w-fit px-1.5 py-0.5 rounded"><i class="fa-regular fa-note-sticky"></i> ${item.note}</div>` : ''}
+                            </div>
+                        </td>
+                        <td class="px-5 py-4 text-right align-top">
+                            <span class="text-sm font-bold text-slate-900">฿${amount.toLocaleString('en-US', {minimumFractionDigits: 2})}</span>
+                        </td>
+                        <td class="px-5 py-4 text-center align-top">
+                            ${statusBadge}
+                        </td>
+                    </tr>
+                `;
+            });
 
-                    const row = `
-                        <tr class="hover:bg-slate-50 transition-colors group">
-                            <td class="px-6 py-4 text-xs font-mono text-slate-500 border-b border-slate-50 group-last:border-0">${item.timestamp}</td>
-                            <td class="px-6 py-4 text-xs font-bold text-slate-700 font-mono border-b border-slate-50 group-last:border-0">${item.id}</td>
-                            <td class="px-6 py-4 border-b border-slate-50 group-last:border-0">
-                                <div class="flex flex-col">
-                                    <div class="flex items-center gap-3">
-                                        ${iconType}
-                                        <span class="text-sm font-bold text-slate-700">${item.merchant}</span>
-                                    </div>
-                                    <div class="flex items-center gap-1.5 mt-1.5 ml-11 text-xs text-slate-400 bg-slate-50 px-2 py-1 rounded-md w-fit">
-                                        <i class="fa-solid fa-envelope text-slate-300"></i> <span>${item.email}</span>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 text-right text-sm font-bold text-slate-900 border-b border-slate-50 group-last:border-0">฿${item.amount}</td>
-                            <td class="px-6 py-4 text-center border-b border-slate-50 group-last:border-0">
-                                <span class="text-[10px] font-bold px-3 py-1 rounded-full border ${statusClass} uppercase tracking-wide shadow-sm">
-                                    ${item.status}
-                                </span>
-                            </td>
-                        </tr>
-                    `;
-                    tbody.innerHTML += row;
-                });
-            } catch (error) {
-                console.error("Fetch error:", error);
-                // Keep showing old data or show error if strictly needed
-            }
+            ELEMENTS.tbody.innerHTML = html;
+            ELEMENTS.totalVol.innerText = `฿${total.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
         }
     </script>
 </body>
