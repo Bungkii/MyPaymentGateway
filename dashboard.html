@@ -13,124 +13,167 @@
                 extend: {
                     fontFamily: { sans: ['"Plus Jakarta Sans"', 'Prompt', 'sans-serif'], },
                     colors: {
-                        primary: { 50: '#eff6ff', 100: '#dbeafe', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 900: '#1e3a8a' }
+                        slate: { 850: '#1e293b' } // Custom dark slate
                     }
                 }
             }
         }
     </script>
     <style>
-        /* Custom Scrollbar */
+        /* Custom Scrollbar for cleaner look */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-        .glass-effect { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        .glass-header { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(226, 232, 240, 0.6); }
     </style>
 </head>
 <body class="h-full text-slate-600 flex flex-col">
 
-    <div class="bg-slate-900 text-white pt-8 pb-32 px-6 relative overflow-hidden shrink-0">
-        <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-600 rounded-full blur-[150px] opacity-20 -translate-y-1/2 translate-x-1/3"></div>
-        <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-indigo-500 rounded-full blur-[120px] opacity-20 translate-y-1/3 -translate-x-1/4"></div>
-
-        <div class="relative z-10 max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-            <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center border border-white/10 shadow-lg">
-                    <i class="fa-solid fa-wallet text-xl text-blue-400"></i>
+    <header class="glass-header fixed top-0 w-full z-30 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center shadow-md shadow-blue-200">
+                    <i class="fa-solid fa-chart-pie text-sm"></i>
                 </div>
-                <div>
-                    <h1 class="text-2xl font-bold tracking-tight text-white">Merchant Console</h1>
-                    <div class="flex items-center gap-2 mt-0.5">
-                        <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                        <p class="text-xs text-slate-400 font-medium uppercase tracking-wider">Live Connection</p>
-                    </div>
-                </div>
+                <h1 class="text-lg font-bold text-slate-800 tracking-tight">Merchant Console</h1>
             </div>
-
-            <div class="flex gap-3">
-                <button onclick="fetchSheetData()" class="group flex items-center gap-2 px-4 py-2.5 bg-white/10 hover:bg-white/20 border border-white/10 rounded-lg text-sm font-medium transition-all text-white">
-                    <i class="fa-solid fa-rotate-right group-hover:rotate-180 transition-transform duration-500"></i>
-                    <span>Refresh Data</span>
+            
+            <div class="flex items-center gap-3">
+                <div class="hidden md:flex items-center gap-2 px-3 py-1.5 bg-green-50 rounded-full border border-green-100">
+                    <span class="relative flex h-2 w-2">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                    </span>
+                    <span class="text-xs font-semibold text-green-700">System Online</span>
+                </div>
+                <button onclick="fetchSheetData()" class="p-2 text-slate-400 hover:text-blue-600 transition-colors" title="Refresh Data">
+                    <i class="fa-solid fa-rotate-right"></i>
                 </button>
             </div>
         </div>
-    </div>
+    </header>
 
-    <div class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 w-full -mt-24 pb-12 relative z-20">
+    <main class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 pt-24 pb-12">
+        
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             
             <div class="lg:col-span-1 space-y-6">
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-200/60 p-6">
-                    <div class="flex items-center gap-3 mb-5">
-                        <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-700">
-                            <i class="fa-solid fa-sliders text-sm"></i>
+                
+                <div class="bg-white rounded-xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 p-6">
+                    <div class="flex items-center gap-3 mb-5 border-b border-slate-50 pb-4">
+                        <div class="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-600">
+                            <i class="fa-solid fa-sliders text-xs"></i>
                         </div>
-                        <h3 class="text-base font-bold text-slate-800">Configuration</h3>
+                        <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wide">Configuration</h3>
                     </div>
                     
                     <div class="space-y-4">
                         <div>
                             <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Merchant Name</label>
-                            <input id="merchantName" type="text" class="block w-full rounded-lg border-slate-200 text-sm focus:border-blue-500 focus:ring-blue-500 bg-slate-50" placeholder="Ex. Bungkii Shop">
+                            <input id="merchantName" type="text" class="block w-full rounded-lg border-slate-200 text-sm focus:border-blue-500 focus:ring-blue-500 bg-slate-50/50 transition-all placeholder:text-slate-300" placeholder="Ex. Bungkii Shop">
                         </div>
                         <div>
                             <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">PromptPay ID</label>
-                            <input id="promptpayID" type="tel" class="block w-full rounded-lg border-slate-200 text-sm font-mono focus:border-blue-500 focus:ring-blue-500 bg-slate-50" placeholder="0xxxxxxxxx">
+                            <input id="promptpayID" type="tel" class="block w-full rounded-lg border-slate-200 text-sm font-mono focus:border-blue-500 focus:ring-blue-500 bg-slate-50/50 transition-all placeholder:text-slate-300" placeholder="0xxxxxxxxx">
                         </div>
-                        <button onclick="saveSettings()" class="w-full mt-2 rounded-lg bg-slate-800 py-2.5 text-xs font-bold text-white hover:bg-slate-700 transition-colors">
-                            Save Changes
-                        </button>
+                        
+                        <div class="pt-2">
+                             <button onclick="saveSettings()" class="w-full rounded-lg bg-slate-800 hover:bg-slate-900 text-white py-2.5 text-xs font-bold transition-all shadow-lg shadow-slate-200 active:scale-95">
+                                Save Settings
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-                <div class="bg-blue-50 rounded-2xl shadow-sm border border-blue-100 p-6">
+                <div class="bg-blue-50 rounded-xl border border-blue-100 p-5">
                     <div class="flex items-center gap-2 mb-3">
                         <i class="fa-brands fa-google-drive text-blue-600"></i>
-                        <h3 class="text-sm font-bold text-blue-900">Google Sheet Connection</h3>
+                        <h3 class="text-xs font-bold text-blue-800 uppercase">Google Sheet Link</h3>
                     </div>
-                    <p class="text-xs text-blue-700 mb-3 leading-relaxed">
-                        Paste your Web App URL here to fetch data.
+                    <p class="text-[11px] text-blue-600/80 mb-3 leading-relaxed">
+                        วาง URL ของ Web App ที่ได้จาก Google Apps Script ที่นี่เพื่อดึงข้อมูล
                     </p>
-                    <input id="sheetUrl" type="text" class="block w-full rounded-lg border-blue-200 text-xs text-blue-800 bg-white mb-3 p-2" placeholder="https://script.google.com/macros/s/..../exec">
-                    <button onclick="saveAndFetch()" class="w-full rounded-lg bg-blue-600 py-2 text-xs font-bold text-white hover:bg-blue-700 transition-colors shadow-sm shadow-blue-200">
-                        Connect & Load
+                    <input id="sheetUrl" type="text" class="block w-full rounded-md border-blue-200 text-[10px] text-blue-800 bg-white mb-2 p-2 focus:ring-0" placeholder="https://script.google.com/macros/s/..../exec">
+                    <button onclick="saveAndFetch()" class="w-full rounded-md bg-blue-600 py-1.5 text-[10px] font-bold text-white hover:bg-blue-700 transition-colors shadow-sm">
+                        Connect Data
                     </button>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 p-6 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-full blur-xl"></div>
+                    
+                    <div class="flex items-center gap-3 mb-5 border-b border-slate-50 pb-4 relative">
+                        <div class="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-600">
+                            <i class="fa-solid fa-link text-xs"></i>
+                        </div>
+                        <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wide">Generate Link</h3>
+                    </div>
+
+                    <div class="space-y-4 relative">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Amount</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 text-sm font-bold">฿</span>
+                                <input id="genAmount" type="number" class="block w-full rounded-lg border-slate-200 py-2.5 pl-8 text-blue-600 font-bold text-lg focus:border-blue-500 focus:ring-blue-500 bg-slate-50/50" placeholder="0.00">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Note</label>
+                            <input id="genNote" type="text" class="block w-full rounded-lg border-slate-200 text-sm focus:border-blue-500 focus:ring-blue-500 bg-slate-50/50" placeholder="Optional">
+                        </div>
+
+                        <button onclick="generateLink()" class="w-full rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-2.5 text-xs font-bold shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30 hover:to-indigo-500 transition-all active:scale-95 flex justify-center items-center gap-2">
+                            Create Payment Link <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+
+                        <div id="resultArea" class="hidden mt-4 pt-4 border-t border-dashed border-slate-200">
+                            <div class="bg-slate-50 p-2 rounded-lg border border-slate-200 flex items-center gap-2">
+                                <input id="generatedLink" type="text" readonly class="bg-transparent border-none text-[10px] text-slate-500 w-full focus:ring-0 p-0 font-mono" value="...">
+                                <button onclick="copyLink()" class="bg-white p-1.5 rounded border border-slate-200 text-slate-400 hover:text-blue-600 hover:border-blue-200 transition-all">
+                                    <i class="fa-regular fa-copy text-xs"></i>
+                                </button>
+                            </div>
+                            <a id="previewLink" href="#" target="_blank" class="block text-center mt-2 text-[10px] font-bold text-blue-600 hover:underline">
+                                Open Link
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <div class="lg:col-span-2">
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-200/60 flex flex-col h-[600px] overflow-hidden">
+                <div class="bg-white rounded-xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 flex flex-col h-[600px] overflow-hidden">
                     
-                    <div class="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-white sticky top-0 z-20">
+                    <div class="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-white/50 backdrop-blur-sm sticky top-0 z-20">
                         <div>
-                            <h3 class="text-lg font-bold text-slate-800">Transaction History</h3>
-                            <p class="text-xs text-slate-400 mt-0.5">Real-time updates from Google Sheets</p>
+                            <h3 class="text-base font-bold text-slate-800">Transaction History</h3>
+                            <p class="text-[11px] text-slate-400 mt-0.5">Real-time updates from Google Sheets</p>
                         </div>
                         <div class="flex gap-4 text-right">
-                            <div>
-                                <p class="text-[10px] text-slate-400 font-bold uppercase">Total Vol.</p>
-                                <p id="totalVolume" class="text-sm font-bold text-slate-800">฿0.00</p>
+                             <div class="text-right">
+                                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Total Volume</p>
+                                <p id="totalVolume" class="text-sm font-bold text-slate-800 font-mono">฿0.00</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="flex-1 overflow-auto relative">
+                    <div class="flex-1 overflow-auto relative bg-white">
                         <table class="w-full text-left border-collapse">
                             <thead class="bg-slate-50 sticky top-0 z-10">
                                 <tr>
-                                    <th class="px-5 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Time</th>
-                                    <th class="px-5 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Details</th>
-                                    <th class="px-5 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider text-right">Amount</th>
-                                    <th class="px-5 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider text-center">Status</th>
+                                    <th class="px-5 py-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Time / ID</th>
+                                    <th class="px-5 py-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Details</th>
+                                    <th class="px-5 py-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider text-right">Amount</th>
+                                    <th class="px-5 py-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider text-center">Status</th>
                                 </tr>
                             </thead>
-                            <tbody id="transactionList" class="divide-y divide-slate-100">
+                            <tbody id="transactionList" class="divide-y divide-slate-50">
                                 <tr>
-                                    <td colspan="4" class="px-6 py-24 text-center">
+                                    <td colspan="4" class="px-6 py-20 text-center">
                                         <div class="flex flex-col items-center justify-center gap-3">
-                                            <i class="fa-solid fa-cloud-arrow-down text-3xl text-slate-200 animate-bounce"></i>
-                                            <span class="text-sm text-slate-400 font-medium">Enter your Script URL to load data</span>
+                                            <div class="w-8 h-8 border-2 border-slate-200 border-t-blue-500 rounded-full animate-spin"></div>
+                                            <span class="text-xs text-slate-400 font-medium">Please connect Google Sheet URL...</span>
                                         </div>
                                     </td>
                                 </tr>
@@ -141,7 +184,7 @@
             </div>
 
         </div>
-    </div>
+    </main>
 
     <script>
         // --- Configuration ---
@@ -159,7 +202,11 @@
             if(localStorage.getItem('merchantName')) ELEMENTS.merchantName.value = localStorage.getItem('merchantName');
             if(localStorage.getItem('promptpayID')) ELEMENTS.promptpayID.value = localStorage.getItem('promptpayID');
             
-            if(localStorage.getItem('sheetUrl')) fetchSheetData();
+            // ถ้ามี URL แล้ว ให้โหลดข้อมูลเลย
+            if(localStorage.getItem('sheetUrl')) {
+                fetchSheetData();
+                setInterval(fetchSheetData, 10000); // Refresh ทุก 10 วินาที
+            }
         };
 
         function saveSettings() {
@@ -175,11 +222,37 @@
             fetchSheetData();
         }
 
+        function generateLink() {
+            const baseUrl = window.location.href.replace('dashboard.html', 'index.html').split('?')[0]; // ปรับชื่อไฟล์ให้ตรงกับหน้าชำระเงิน
+            const amount = document.getElementById('genAmount').value;
+            const note = document.getElementById('genNote').value;
+            const merchant = ELEMENTS.merchantName.value || localStorage.getItem('merchantName');
+
+            if (!amount) { alert("Please enter amount"); return; }
+
+            let params = [`amount=${amount}`];
+            if (merchant) params.push(`merchant=${encodeURIComponent(merchant)}`);
+            if (note) params.push(`note=${encodeURIComponent(note)}`);
+
+            const finalUrl = `${baseUrl}?${params.join('&')}`;
+            document.getElementById('generatedLink').value = finalUrl;
+            document.getElementById('previewLink').href = finalUrl;
+            document.getElementById('resultArea').classList.remove('hidden');
+        }
+
+        function copyLink() {
+            const copyText = document.getElementById("generatedLink");
+            copyText.select();
+            navigator.clipboard.writeText(copyText.value);
+            alert("Copied!");
+        }
+
         async function fetchSheetData() {
             const url = localStorage.getItem('sheetUrl');
             if (!url) return;
 
-            ELEMENTS.tbody.innerHTML = `<tr><td colspan="4" class="py-20 text-center text-slate-400"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Loading data...</td></tr>`;
+            // Optional: Show simple loading status (commented out to avoid flickering)
+            // ELEMENTS.tbody.innerHTML = `<tr><td colspan="4" class="py-10 text-center text-slate-400 text-xs">Refreshing...</td></tr>`;
 
             try {
                 const response = await fetch(url);
@@ -187,37 +260,33 @@
                 renderTable(data);
             } catch (error) {
                 console.error("Error:", error);
-                ELEMENTS.tbody.innerHTML = `<tr><td colspan="4" class="py-10 text-center text-red-400 text-sm">Failed to load data. Check URL or Permissions.</td></tr>`;
+                // แสดง Error เฉพาะถ้ามันพังจริงๆ
             }
         }
 
         function renderTable(data) {
-            if (data.length === 0) {
-                ELEMENTS.tbody.innerHTML = `<tr><td colspan="4" class="py-10 text-center text-slate-400">No transactions found</td></tr>`;
+            if (!data || data.length === 0) {
+                ELEMENTS.tbody.innerHTML = `<tr><td colspan="4" class="py-20 text-center text-slate-400 text-xs">No transactions found</td></tr>`;
                 return;
             }
 
             let total = 0;
             let html = '';
 
-            // Sort by Timestamp (Newest first) - assuming timestamp is parseable
-            // ถ้า Date format ใน sheet ซับซ้อน อาจต้องปรับแก้ตรงนี้
-            data.reverse(); 
-
             data.forEach(item => {
-                // Calculation
+                // คำนวณยอดรวม
                 const amount = parseFloat(item.amount) || 0;
                 total += amount;
 
-                // Status Styling
-                // เช็คค่าจาก Column G: ถ้าเป็น TRUE/Checked จะได้ค่า true หรือ "TRUE"
+                // Status Logic (จาก Checkbox หรือ Text ใน Sheet)
                 let statusBadge;
                 const statusLower = String(item.status).toLowerCase();
                 
+                // ตรวจสอบค่า 'true', 'checked', 'paid', 'completed'
                 if (statusLower === 'true' || statusLower === 'completed' || statusLower === 'paid') {
-                    statusBadge = `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-green-50 text-green-600 border border-green-100"><i class="fa-solid fa-check"></i> Paid</span>`;
+                    statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-green-50 text-green-600 border border-green-100 shadow-sm"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Paid</span>`;
                 } else {
-                    statusBadge = `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-slate-100 text-slate-500 border border-slate-200">Pending</span>`;
+                    statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-slate-100 text-slate-500 border border-slate-200"><span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span> Pending</span>`;
                 }
 
                 // Date Formatting
@@ -230,20 +299,20 @@
                 } catch(e) {}
 
                 html += `
-                    <tr class="hover:bg-slate-50/80 transition-colors border-b border-slate-50 last:border-0 group">
+                    <tr class="hover:bg-slate-50 transition-colors group">
                         <td class="px-5 py-4 align-top">
-                            <div class="text-xs font-medium text-slate-700 font-mono">${dateStr}</div>
-                            <div class="text-[10px] text-slate-400 mt-1 font-mono group-hover:text-blue-500 transition-colors">#${item.transactionId}</div>
+                            <div class="text-xs font-semibold text-slate-700 font-mono">${dateStr}</div>
+                            <div class="text-[10px] text-slate-400 mt-1 font-mono group-hover:text-blue-500 transition-colors">#${item.id}</div>
                         </td>
                         <td class="px-5 py-4 align-top">
                             <div class="flex flex-col">
-                                <span class="text-sm font-bold text-slate-700">${item.merchant}</span>
+                                <span class="text-sm font-bold text-slate-800">${item.merchant}</span>
                                 <span class="text-xs text-slate-500 mt-0.5">${item.email}</span>
-                                ${item.note ? `<div class="mt-1.5 flex items-center gap-1 text-[10px] text-slate-400 bg-white border border-slate-200 w-fit px-1.5 py-0.5 rounded"><i class="fa-regular fa-note-sticky"></i> ${item.note}</div>` : ''}
+                                ${item.note ? `<div class="mt-2 flex items-center gap-1 text-[10px] text-slate-500 bg-slate-100 border border-slate-200 w-fit px-2 py-0.5 rounded-md"><i class="fa-regular fa-note-sticky text-slate-400"></i> ${item.note}</div>` : ''}
                             </div>
                         </td>
                         <td class="px-5 py-4 text-right align-top">
-                            <span class="text-sm font-bold text-slate-900">฿${amount.toLocaleString('en-US', {minimumFractionDigits: 2})}</span>
+                            <span class="text-sm font-bold text-slate-800 tracking-tight">฿${amount.toLocaleString('en-US', {minimumFractionDigits: 2})}</span>
                         </td>
                         <td class="px-5 py-4 text-center align-top">
                             ${statusBadge}
